@@ -5,9 +5,7 @@ import com.hashmapinc.demo.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -28,5 +26,23 @@ public class ProductController {
         } catch (NoSuchElementException e) {
             return new ResponseEntity<Product>(HttpStatus.NOT_FOUND);
         }
+    }
+    @PostMapping("/products")
+    public void add(@RequestBody Product product) {
+        service.save(product);
+    }
+    @PutMapping("/products")
+    public ResponseEntity<?> update(@RequestBody Product product) {
+        try {
+            service.delete(product.getId());
+            service.save(product);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (NoSuchElementException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+    @DeleteMapping("/products/{id}")
+    public void delete(@PathVariable Integer id) {
+        service.delete(id);
     }
 }
